@@ -1,17 +1,11 @@
 package com.nostadroid.notes.util
 
-import android.os.Build
 import android.text.Html
 
 // Helper method to strip Markdown and HTML tags
 fun stripFormatting(input: String): String {
   // Convert HTML character entities to regular Unicode
-  val decodedInput = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-    Html.fromHtml(input, Html.FROM_HTML_MODE_LEGACY).toString()
-  } else {
-    @Suppress("DEPRECATION")
-    Html.fromHtml(input).toString()
-  }
+  val decodedInput = Html.fromHtml(input, Html.FROM_HTML_MODE_LEGACY).toString()
   return decodedInput
     .replace(Regex("<[^>]*>"), "") // Strips HTML tags (e.g., <b>text</b> -> text)
     .replace(Regex("^#{1,6}\\s+"), "") // Strips Markdown Headers (e.g., # Header -> Header)
