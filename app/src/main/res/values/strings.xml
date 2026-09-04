@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">NotePad</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="confirm">Confirm</string>
+    <string name="all">All</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="search_notes_placeholder">Search notes</string>
+    <string name="home_screen_no_results_found_search">No results found</string>
+    <string name="home_screen_no_notes">No notes found. Tap the + to create a new one.</string>
+    <string name="new_note_screen_title">New note</string>
+    <string name="edit_note_screen_title">Edit note</string>
+    <string name="note_edit_title_textbox_placeholder">Title</string>
+    <string name="note_edit_body_textbox_placeholder">Type anything…</string>
+    <string name="note_edit_heading_menu_item_label">Heading %d</string>
+    <string name="note_edit_heading_menu_item_normal">Normal</string>
+    <string name="note_edit_add_link_dialog_title">Add a link</string>
+    <string name="note_edit_add_link_dialog_text_placeholder">Text</string>
+    <string name="note_edit_add_link_dialog_url_placeholder">URL</string>
+    <string name="note_edit_time_picker_dialog_title">Set time</string>
+    <string name="note_context_menu_move_to_folder">Move to folder</string>
+    <string name="note_context_menu_export">Export</string>
+    <string name="note_context_menu_change_date">Change date</string>
+    <string name="note_context_menu_delete">Delete</string>
+    <string name="folders_dialog_new_folder">New folder</string>
+    <string name="new_folder_dialog_name_placeholder">Name</string>
+    <string name="new_folder_dialog_name_error">Name cannot be blank.</string>
+    <string name="folder_sheet_uncategorized">Uncategorized</string>
+    <string name="folder_sheet_delete_folder_dialog_title">Delete folder</string>
+    <string name="folder_sheet_delete_folder_dialog_content_one_item">Are you sure you want to delete folder %s?
+    This action will also delete 1 note in this folder.</string>
+    <string name="folder_sheet_delete_folder_dialog_content">Are you sure you want to delete folder %s?
+    This action will also delete %d notes in this folder.</string>
+    <string name="settings_page_header">Settings</string>
+    <string name="settings_default_note_save_type">Save notes as</string>
+    <string name="settings_default_note_save_type_markdown">Markdown</string>
+    <string name="settings_default_note_save_type_html">HTML</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="HardwareInputStateStorage">
+    <option name="enabledDevices">
+      <map>
+        <entry key="Default::serial=192.168.1.10:38765;connection=4bcef9e4" value="1788518932512" />
+      </map>
+    </option>
+  </component>
+</project>
