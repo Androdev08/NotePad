@@ -19,7 +19,7 @@ A simple note-taking application for Android built with Jetpack Compose.
 <img width="300" alt="Screenshot_2026-09-04-14-04-33-050_com nostadroid notes" src="https://github.com/user-attachments/assets/b3e1f5d9-5fd7-4320-a8d5-3f9f127cc9c1" />
 
 ## Installation
-- Download the latest APK from the [https://github.com/Androdev08/NotePad/releases/latest](releases page)
+- Download the latest APK from the [releases page](https://github.com/Androdev08/NotePad/releases/latest)
 
 ## Building from source
 1. Clone this repository with `git clone`.
