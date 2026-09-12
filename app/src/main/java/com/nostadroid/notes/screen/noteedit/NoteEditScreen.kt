@@ -136,7 +136,7 @@ fun NoteEditScreen(
   // Determine save type
   val activeSaveType = if (_inViewMode && currentNote != null) currentNote.saveType else defaultSaveType
 
-  val isHTML = activeSaveType == "HTML"
+  val isHTML = activeSaveType == "html"
 
   // Create the categories list
   val categories = remember(bodyRichTextState.currentSpanStyle, bodyRichTextState.currentParagraphStyle, isHTML) {
@@ -162,7 +162,7 @@ fun NoteEditScreen(
   // Determine the actions to do when exiting the screen
   fun onExit() {
     val currentTitleText = titleTextFieldState.text.toString()
-    val currentBody = if (activeSaveType == "Markdown") {
+    val currentBody = if (activeSaveType == "md") {
       bodyRichTextState.toMarkdown()
     } else {
       bodyRichTextState.toHtml()

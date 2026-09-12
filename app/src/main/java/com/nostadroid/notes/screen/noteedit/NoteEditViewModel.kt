@@ -47,7 +47,7 @@ class NoteEditViewModel : ViewModel() {
       loadedNoteId = noteId
       // Safely swap out text buffers completely
       titleTextFieldState.edit { replace(0, length, title) }
-      if(contentType == "Markdown") bodyRichTextState.setMarkdown(content)
+      if(contentType == "md") bodyRichTextState.setMarkdown(content)
       else bodyRichTextState.setHtml(content)
       bodyRichTextState.history.clear() // Clean history undo/redo stack for the new note
       _uiState.update { it.copy(currentTimestamp = initialTimestamp) }
@@ -71,7 +71,7 @@ class NoteEditViewModel : ViewModel() {
   fun clearState() {
     loadedNoteId = -1
     titleTextFieldState.edit { replace(0, length, "") }
-    bodyRichTextState.setMarkdown("")
+    bodyRichTextState.setText("")
     bodyRichTextState.history.clear()
   }
 
@@ -97,7 +97,7 @@ class NoteEditViewModel : ViewModel() {
     homeViewModel: HomeViewModel,
     onComplete: () -> Unit
   ) {
-    val isHTML = activeSaveType == "HTML"
+    val isHTML = activeSaveType == "html"
     val autoTitle = currentTitleText.isEmpty()
 
     // Check if anything actually changed

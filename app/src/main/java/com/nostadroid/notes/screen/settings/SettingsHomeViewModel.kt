@@ -13,12 +13,15 @@ class SettingsHomeViewModel(private val settingsManager: SettingsManager) : View
     .stateIn(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5000),
-      initialValue = "Markdown"
+      initialValue = "md"
     )
 
-  fun updateSaveType(saveType: String) {
+  fun updateSaveType(saveType: NoteSaveType) {
     viewModelScope.launch {
-      settingsManager.storeSaveType(saveType)
+      settingsManager.storeSaveType(when (saveType) {
+        NoteSaveType.MARKDOWN -> "md"
+        NoteSaveType.HTML -> "html"
+      })
     }
   }
 }

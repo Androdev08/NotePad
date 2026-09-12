@@ -32,7 +32,8 @@ fun FoldersSheet(
   onDismiss: () -> Unit
 ) {
   val folderList by homeViewModel.folders.collectAsStateWithLifecycle(initialValue = emptyList())
-  val allNotes by homeViewModel.notes.collectAsStateWithLifecycle(initialValue = emptyList())
+  val rawNotes by homeViewModel.notes.collectAsStateWithLifecycle(initialValue = emptyList())
+  val allNotes = rawNotes ?: emptyList()
 
   val viewModel: FoldersSheetViewModel = viewModel()
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -68,9 +69,11 @@ fun FoldersSheet(
             ) {
               onDismiss() // Close the sheet
               // Insert the note into the database
-              val updatedNote = noteEntity!!.note.copy(folderName = folder.name, folderId = folder.uid)
-              val updatedNoteEntity = noteEntity.copy(note = updatedNote)
-              homeViewModel.insertNote(updatedNoteEntity) { if(inViewMode) homeViewModel.onEditNote(null) }
+              noteEntity?.let { currentNote ->
+                val updatedNote = currentNote.note.copy(folderName = folder.name, folderId = folder.uid)
+                val updatedNoteEntity = currentNote.copy(note = updatedNote)
+                homeViewModel.insertNote(updatedNoteEntity) { if (inViewMode) homeViewModel.onEditNote(null) }
+              }
             }
           } else {
             // "Uncategorized" option, i.e. no folder and only shows up in "All"

@@ -46,6 +46,15 @@ fun SettingsHomeScreen(navController: NavHostController) {
   // Get settings
   val currentSaveType by viewModel.saveTypeState.collectAsStateWithLifecycle()
 
+  val mdSaveType = stringResource(R.string.settings_default_note_save_type_markdown)
+  val htmlSaveType = stringResource(R.string.settings_default_note_save_type_html)
+
+  // Determine user-friendly display string from raw DataStore value
+  val displaySaveType = when (currentSaveType) {
+    "html" -> htmlSaveType
+    else -> mdSaveType
+  }
+
   Scaffold(
     modifier = Modifier.fillMaxSize(),
     topBar = {
@@ -66,11 +75,14 @@ fun SettingsHomeScreen(navController: NavHostController) {
         Column {
           SingleChoiceSettingsItem(
             title = stringResource(R.string.settings_default_note_save_type),
-            currentValue = currentSaveType,
-            options = listOf(stringResource(R.string.settings_default_note_save_type_markdown),
-            stringResource(R.string.settings_default_note_save_type_html)),
+            currentValue = displaySaveType,
+            options = listOf(mdSaveType, htmlSaveType),
             isLastItem = true
-          ) { viewModel.updateSaveType(it) }
+          ) { viewModel.updateSaveType(when (it) {
+            mdSaveType -> NoteSaveType.MARKDOWN
+            htmlSaveType -> NoteSaveType.HTML
+            else -> NoteSaveType.MARKDOWN
+          }) }
         }
       }
     }

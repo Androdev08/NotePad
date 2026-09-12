@@ -46,10 +46,13 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import androidx.room.Room
 import com.nostadroid.notes.R
+import com.nostadroid.notes.datastore.SettingsManager
 import com.nostadroid.notes.db.AppDatabase
 import com.nostadroid.notes.db.Folder
 import com.nostadroid.notes.db.NoteEntity
 import com.nostadroid.notes.screen.noteedit.NoteEditScreen
+import com.nostadroid.notes.screen.settings.NoteSaveType
+import com.nostadroid.notes.screen.settings.SettingsHomeViewModel
 import com.nostadroid.notes.ui.ExpandableFAB
 import com.nostadroid.notes.ui.FolderFilterChip
 import com.nostadroid.notes.ui.NoteCard
@@ -68,6 +71,7 @@ fun HomeScreen(navController: NavHostController) {
   val db = remember { Room.databaseBuilder(context, AppDatabase::class.java, "notes.db").build() }
   val noteDao = remember { db.noteDao() }
   val folderDao = remember { db.folderDao() }
+  // View models
   val viewModel: HomeViewModel = viewModel(
     factory = viewModelFactory {
       initializer {
@@ -75,6 +79,14 @@ fun HomeScreen(navController: NavHostController) {
       }
     }
   )
+  val settingsViewModel: SettingsHomeViewModel = viewModel(
+    factory = viewModelFactory {
+      initializer {
+        SettingsHomeViewModel(SettingsManager(navController.context))
+      }
+    }
+  )
+
   var notePendingExport by remember { mutableStateOf<NoteEntity?>(null) }
   val filePickerLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.CreateDocument("*/*")
@@ -96,7 +108,8 @@ fun HomeScreen(navController: NavHostController) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
   val fabExpanded = uiState.fabExpanded
   val searchQuery = uiState.searchQuery
-  val allNotes by viewModel.notes.collectAsState()
+  val allNotesRaw by viewModel.notes.collectAsState()
+  val allNotes = allNotesRaw ?: emptyList()
   val currentFolders by viewModel.folders.collectAsState()
   val editingNote = uiState.editingNote
   val fromTapAndHold = uiState.fromTapAndHold
@@ -117,6 +130,28 @@ fun HomeScreen(navController: NavHostController) {
   LaunchedEffect(Unit) {
     if (currentFolders.isEmpty()) {
       viewModel.insertFolder(Folder(-1, "", 0))
+    }
+  }
+  // Specify a migration path (old note save types "Markdown" and "HTML" get turned into "md" and "html")
+  val noteSaveType by settingsViewModel.saveTypeState.collectAsStateWithLifecycle()
+  val mdSaveType = stringResource(R.string.settings_default_note_save_type_markdown)
+  val htmlSaveType = stringResource(R.string.settings_default_note_save_type_html)
+
+  LaunchedEffect(noteSaveType, allNotes) {
+    if (noteSaveType == mdSaveType || noteSaveType == htmlSaveType) {
+      val targetType = if (noteSaveType == mdSaveType) "md" else "html"
+      // Migrate existing notes in database
+      allNotes.forEach { ne ->
+        if (ne.note.saveType == mdSaveType || ne.note.saveType == htmlSaveType) {
+          viewModel.insertNote(ne.copy(note = ne.note.copy(saveType = targetType))) {}
+        }
+      }
+      // Update the setting store key
+      if (noteSaveType == mdSaveType) {
+        settingsViewModel.updateSaveType(NoteSaveType.MARKDOWN)
+      } else {
+        settingsViewModel.updateSaveType(NoteSaveType.HTML)
+      }
     }
   }
 
@@ -194,7 +229,7 @@ fun HomeScreen(navController: NavHostController) {
               .fillMaxSize()
               .weight(1f)
           ) {
-            if (allNotes.isEmpty() && searchQuery.isEmpty()) {
+            if (allNotesRaw != null && allNotes.isEmpty() && searchQuery.isEmpty()) {
               Text(
                 text = stringResource(R.string.home_screen_no_notes),
                 style = MaterialTheme.typography.labelLarge,

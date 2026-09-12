@@ -38,11 +38,11 @@ data class HomeUiState(
 class HomeViewModel(private val noteDao: NoteDao, private val folderDao: FolderDao) : ViewModel() {
   private val _uiState = MutableStateFlow(HomeUiState())
   val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-  val notes: StateFlow<List<NoteEntity>> = noteDao.getAll()
+  val notes: StateFlow<List<NoteEntity>?> = noteDao.getAll()
     .stateIn(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5000),
-      initialValue = emptyList()
+      initialValue = null
     )
   val folders: StateFlow<List<Folder>> = folderDao.getAll()
     .stateIn(
