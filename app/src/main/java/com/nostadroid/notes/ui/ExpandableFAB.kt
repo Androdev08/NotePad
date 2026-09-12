@@ -1,7 +1,7 @@
 package com.nostadroid.notes.ui
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -28,8 +28,10 @@ fun ExpandableFAB(
   viewModel: HomeViewModel,
   modifier: Modifier = Modifier
 ) {
-  val animatedPadding by animateIntAsState(if(isExpanded) 0 else 16)
   val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
+  val bottomPadding = navBarPadding.calculateBottomPadding()
+  val animatedBottomPadding by animateDpAsState(if(isExpanded) 0.dp else (bottomPadding + 16.dp))
+  val animatedEndPadding by animateDpAsState(if(isExpanded) 0.dp else 16.dp)
   val layoutDirection = LocalLayoutDirection.current
   val isRtl = layoutDirection == LayoutDirection.Rtl
 
@@ -37,8 +39,8 @@ fun ExpandableFAB(
     targetState = isExpanded,
     modifier = modifier
       .padding(
-        bottom = navBarPadding.calculateBottomPadding() + animatedPadding.dp,
-        end = navBarPadding.calculateEndPadding(if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) + animatedPadding.dp
+        bottom = animatedBottomPadding,
+        end = navBarPadding.calculateEndPadding(if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) + animatedEndPadding
       )
   ) { expanded ->
     if (expanded) {

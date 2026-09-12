@@ -3,7 +3,6 @@ package com.nostadroid.notes.screen.noteedit
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.filled.FormatAlignRight
-import androidx.compose.material.icons.automirrored.filled.FormatIndentDecrease
 import androidx.compose.material.icons.automirrored.filled.FormatIndentIncrease
 import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.automirrored.filled.List
@@ -41,38 +40,40 @@ object FormatOptionsBuilder {
           state.currentHeadingStyle != HeadingStyle.Normal
     // Declare the options for text formatting
     val textFormatOptions = listOf(
-      FormatOption(Icons.Default.FormatBold, isCurrentTextBold, false) { _ ->
-        state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-      }, // Bold
+      // Bold
       FormatOption(
-        Icons.Default.FormatItalic,
-        state.currentSpanStyle.fontStyle == FontStyle.Italic, false
-      ) { _ ->
-        state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
-      }, // Italic
+        icon = Icons.Default.FormatBold,
+        enabled = isCurrentTextBold,
+        htmlRequired = false) { _ -> state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold)) },
+      // Italic
       FormatOption(
-        Icons.Default.FormatUnderlined,
-        state.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
-        false
-      ) { _ ->
-        state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-      }, // Underlined
+        icon = Icons.Default.FormatItalic,
+        enabled = state.currentSpanStyle.fontStyle == FontStyle.Italic,
+        htmlRequired = false
+      ) { _ -> state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic)) },
+      // Underlined
       FormatOption(
-        Icons.Default.FormatStrikethrough,
-        state.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
-        false
-      ) { _ ->
-        state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
-      }, // Strikethrough
+        icon = Icons.Default.FormatUnderlined,
+        enabled = state.currentSpanStyle.textDecoration?.contains(TextDecoration.Underline) == true,
+        htmlRequired = false
+      ) { _ -> state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline)) },
+      // Strikethrough
       FormatOption(
-        Icons.Default.FormatSize,
-        state.currentHeadingStyle != HeadingStyle.Normal, false
-      ) { _ ->
-        screenViewModel.setIsHeadingMenuShowing(true)
-      }, // Heading styles
+        icon = Icons.Default.FormatStrikethrough,
+        enabled = state.currentSpanStyle.textDecoration?.contains(TextDecoration.LineThrough) == true,
+        htmlRequired = false
+      ) { _ -> state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) },
+      // Heading styles
       FormatOption(
-        Icons.Default.Superscript,
-        state.currentSpanStyle.baselineShift == BaselineShift.Superscript, true
+        icon = Icons.Default.FormatSize,
+        enabled = state.currentHeadingStyle != HeadingStyle.Normal,
+        htmlRequired = false
+      ) { _ -> screenViewModel.setIsHeadingMenuShowing(true) },
+      // Superscript
+      FormatOption(
+        icon = Icons.Default.Superscript,
+        enabled = state.currentSpanStyle.baselineShift == BaselineShift.Superscript,
+        htmlRequired = true
       ) { enabled ->
         if (enabled) {
           // If the selected text is a subscript, remove the style and replace it with superscript
@@ -81,10 +82,12 @@ object FormatOptionsBuilder {
           state.addSpanStyle(SpanStyle(baselineShift = BaselineShift.Superscript))
         }
         else state.removeSpanStyle(SpanStyle(baselineShift = BaselineShift.Superscript))
-      }, // Superscript
+      },
+      // Subscript
       FormatOption(
-        Icons.Default.Subscript,
-        state.currentSpanStyle.baselineShift == BaselineShift.Subscript, true
+        icon = Icons.Default.Subscript,
+        enabled = state.currentSpanStyle.baselineShift == BaselineShift.Subscript,
+        htmlRequired = true
       ) { enabled ->
         if (enabled) {
           // If the selected text is a superscript, remove the style and replace it with subscript
@@ -93,53 +96,47 @@ object FormatOptionsBuilder {
           state.addSpanStyle(SpanStyle(baselineShift = BaselineShift.Subscript))
         }
         else state.removeSpanStyle(SpanStyle(baselineShift = BaselineShift.Subscript))
-      }, // Subscript
+      },
     )
     val listOptions = listOf(
+      // Unordered list
       FormatOption(
-        Icons.AutoMirrored.Default.FormatListBulleted,
-        state.isUnorderedList,
-        false
-      ) { enabled ->
-        if (enabled) state.addUnorderedList() else state.removeUnorderedList()
-      }, // Unordered list
+        icon = Icons.AutoMirrored.Default.FormatListBulleted,
+        enabled = state.isUnorderedList,
+        htmlRequired = false
+      ) { enabled -> if (enabled) state.addUnorderedList() else state.removeUnorderedList() },
+      // Ordered list
       FormatOption(
-        Icons.Default.FormatListNumbered,
-        state.isOrderedList,
-        false
-      ) { enabled ->
-        if (enabled) state.addOrderedList() else state.removeOrderedList()
-      }, // Ordered list
+        icon = Icons.Default.FormatListNumbered,
+        enabled = state.isOrderedList,
+        htmlRequired = false
+      ) { enabled -> if (enabled) state.addOrderedList() else state.removeOrderedList() },
+      // Increase list indentation
       FormatOption(
-        Icons.AutoMirrored.Default.FormatIndentIncrease,
+        icon = Icons.AutoMirrored.Default.FormatIndentIncrease,
         enabled = false,
         htmlRequired = false
-      ) { _ -> state.increaseListLevel() }, // Increase list indentation
-      FormatOption(
-        Icons.AutoMirrored.Default.FormatIndentDecrease,
-        enabled = false,
-        htmlRequired = false
-      ) { _ -> state.decreaseListLevel() }, // Decrease list indentation
+      ) { _ -> state.increaseListLevel() },
     )
     val alignOptions = listOf(
+      // Left align
       FormatOption(
-        Icons.AutoMirrored.Default.FormatAlignLeft,
-        state.currentParagraphStyle.textAlign == TextAlign.Left, true
-      ) { _ ->
-        state.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Left))
-      }, // Left align
+        icon = Icons.AutoMirrored.Default.FormatAlignLeft,
+        enabled = state.currentParagraphStyle.textAlign == TextAlign.Left,
+        htmlRequired = true
+      ) { _ -> state.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Left)) },
+      // Center align
       FormatOption(
-        Icons.Default.FormatAlignCenter,
-        state.currentParagraphStyle.textAlign == TextAlign.Center, true
-      ) { _ ->
-        state.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center))
-      }, // Center align
+        icon = Icons.Default.FormatAlignCenter,
+        enabled = state.currentParagraphStyle.textAlign == TextAlign.Center,
+        htmlRequired = true
+      ) { _ -> state.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center)) },
+      // Right align
       FormatOption(
-        Icons.AutoMirrored.Default.FormatAlignRight,
-        state.currentParagraphStyle.textAlign == TextAlign.Right, true
-      ) { _ ->
-        state.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Right))
-      }, // Right align
+        icon = Icons.AutoMirrored.Default.FormatAlignRight,
+        enabled = state.currentParagraphStyle.textAlign == TextAlign.Right,
+        htmlRequired = true
+      ) { _ -> state.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Right)) },
     )
 
     return listOf(
