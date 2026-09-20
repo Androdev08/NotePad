@@ -29,8 +29,7 @@ fun ExpandableFAB(
   modifier: Modifier = Modifier
 ) {
   val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
-  val bottomPadding = navBarPadding.calculateBottomPadding()
-  val animatedBottomPadding by animateDpAsState(if(isExpanded) 0.dp else (bottomPadding + 16.dp))
+  val animatedBottomPadding by animateDpAsState(if(isExpanded) 0.dp else 16.dp)
   val animatedEndPadding by animateDpAsState(if(isExpanded) 0.dp else 16.dp)
   val layoutDirection = LocalLayoutDirection.current
   val isRtl = layoutDirection == LayoutDirection.Rtl
@@ -39,7 +38,7 @@ fun ExpandableFAB(
     targetState = isExpanded,
     modifier = modifier
       .padding(
-        bottom = animatedBottomPadding,
+        bottom = navBarPadding.calculateBottomPadding() + animatedBottomPadding,
         end = navBarPadding.calculateEndPadding(if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) + animatedEndPadding
       )
   ) { expanded ->
