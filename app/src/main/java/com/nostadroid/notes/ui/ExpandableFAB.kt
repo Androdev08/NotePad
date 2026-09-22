@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.nostadroid.notes.screen.home.HomeViewModel
 import com.nostadroid.notes.screen.noteedit.NoteEditScreen
@@ -29,18 +28,15 @@ fun ExpandableFAB(
   modifier: Modifier = Modifier
 ) {
   val navBarPadding = WindowInsets.navigationBars.asPaddingValues()
+  val layoutDirection = LocalLayoutDirection.current
+  val baseBottomPadding = navBarPadding.calculateBottomPadding()
+  val baseEndPadding = navBarPadding.calculateEndPadding(layoutDirection)
   val animatedBottomPadding by animateDpAsState(if(isExpanded) 0.dp else 16.dp)
   val animatedEndPadding by animateDpAsState(if(isExpanded) 0.dp else 16.dp)
-  val layoutDirection = LocalLayoutDirection.current
-  val isRtl = layoutDirection == LayoutDirection.Rtl
 
   AnimatedContent(
     targetState = isExpanded,
     modifier = modifier
-      .padding(
-        bottom = navBarPadding.calculateBottomPadding() + animatedBottomPadding,
-        end = navBarPadding.calculateEndPadding(if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr) + animatedEndPadding
-      )
   ) { expanded ->
     if (expanded) {
       // Transition into the new note screen
@@ -50,7 +46,10 @@ fun ExpandableFAB(
       }
     } else {
       // Use the floating action button
-      FloatingActionButton(onClick = onClick) {
+      FloatingActionButton(onClick = onClick, modifier = Modifier.padding(
+        bottom = baseBottomPadding + animatedBottomPadding,
+        end = baseEndPadding + animatedEndPadding
+      )) {
         Icon(Icons.Default.Add, contentDescription = null)
       }
     }
